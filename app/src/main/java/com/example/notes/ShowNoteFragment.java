@@ -28,7 +28,7 @@ public class ShowNoteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (  getArguments() != null) {
             index = getArguments().getInt(ARG_INDEX);
         }
     }
@@ -37,6 +37,9 @@ public class ShowNoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_note, container, false);
+        if (index == -1) {
+            return view;
+        }
         Notes note = Notes.notes.get(index);
         MaterialTextView dateView = view.findViewById(R.id.date_note);
         dateView.append(note.getDate());
