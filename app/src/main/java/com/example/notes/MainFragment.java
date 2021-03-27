@@ -9,33 +9,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Date;
 
 public class MainFragment extends Fragment {
-    private final String SaveLastIndex = "SAVE_LAST_INDEX";
-    private int lastIndex;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null) {
-            new Notes("1st note", "qnggniqjpijpjkjkgq! qfwg.", new Date());
-            new Notes("2st note", "qnggniqjpijpjkjkgq! whrrdfk.", new Date());
-            new Notes("3st note", "0000qjpijpjkjkgq! qfwg.", new Date());
-            new Notes("4st note", "12342151jkgq! qfwg.", new Date());
-            init(view);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(SaveLastIndex, lastIndex);
-        super.onSaveInstanceState(outState);
+        init(view);
     }
 
     @Override
@@ -46,9 +34,24 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        setHasOptionsMenu(true);
+        return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.add_toolbar_menu, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.add_node){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @SuppressLint({"ResourceAsColor", "SetTextI18n"})
     private void init(View view){
@@ -65,12 +68,12 @@ public class MainFragment extends Fragment {
     }
 
     private void showNote(int index){
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            ShowNoteFragment fragment = ShowNoteFragment.newInstance(index);
-            getFragmentManager().beginTransaction().replace(R.id.land_note, fragment).commit();
-        } else {
         ShowNoteFragment fragment = ShowNoteFragment.newInstance(index);
-        getFragmentManager().beginTransaction().replace(R.id.main_activity, fragment).addToBackStack(null).commit();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getChildFragmentManager().beginTransaction().replace(R.id.second_container, fragment).commit();
+        } else {
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.first_container, fragment).addToBackStack(null).commit();
         }
     }
 }
