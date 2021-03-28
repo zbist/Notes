@@ -6,19 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Notes {
-    public static ArrayList<Notes> notes = new ArrayList<>();
-    @SuppressLint("SimpleDateFormat")
+public class Note {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private String name;
     private String content;
     private Date date;
 
-    public Notes(String name, String content, Date date) {
+    public Note(String name, String content, Date date) {
         this.name = name;
         this.content = content;
         this.date = date;
-        notes.add(this);
     }
 
     public String getName() {

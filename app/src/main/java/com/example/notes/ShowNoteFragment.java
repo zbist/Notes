@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
@@ -40,13 +39,13 @@ public class ShowNoteFragment extends Fragment {
         if (index == -1) {
             return view;
         }
-        Notes note = Notes.notes.get(index);
-        MaterialTextView dateView = view.findViewById(R.id.date_note);
-        dateView.append(note.getDate());
-        TextInputEditText nameView = view.findViewById(R.id.name_note_input);
-        nameView.setText(note.getName());
-        TextInputEditText textView = view.findViewById(R.id.text_note_input);
-        textView.setText(note.getContent());
+//        Note note = Note.notes.get(index);
+//        MaterialTextView dateView = view.findViewById(R.id.date_note);
+//        dateView.append(note.getDate());
+//        TextInputEditText nameView = view.findViewById(R.id.name_note_input);
+//        nameView.setText(note.getName());
+//        TextInputEditText textView = view.findViewById(R.id.text_note_input);
+//        textView.setText(note.getContent());
         return view;
     }
 }

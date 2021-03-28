@@ -1,12 +1,15 @@
 package com.example.notes;
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,29 +17,55 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 
 public class MainFragment extends Fragment {
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
+    private NotesViewModel notesViewModel;
+    private NotesAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        notesViewModel = new ViewModelProvider(this).get(NotesViewModel.class);
+        notesViewModel.fetchNotes();
         setHasOptionsMenu(true);
-        return view;
+        return inflater.inflate(R.layout.fragment_main, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        adapter = new NotesAdapter();
+        adapter.setNoteClicked(new NotesAdapter.OnNoteClicked() {
+            @Override
+            public void onNoteClick(Note note) {
+                Toast.makeText(requireContext(), note.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        adapter.setNoteLongClicked(new NotesAdapter.OnNoteLongClicked() {
+            @Override
+            public void onNoteLongClick(Note note) {
+                Toast.makeText(requireContext(), note.getName() + "Long", Toast.LENGTH_SHORT).show();
+            }
+        });
+        RecyclerView recyclerView = view.findViewById(R.id.recycleView);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+
+        notesViewModel.getNotesLiveData().observe(getViewLifecycleOwner(), new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                adapter.addItems(notes);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -44,27 +73,12 @@ public class MainFragment extends Fragment {
         inflater.inflate(R.menu.add_toolbar_menu, menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.add_node){
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressLint({"ResourceAsColor", "SetTextI18n"})
-    private void init(View view){
-        LinearLayout linearLayout = view.findViewById(R.id.liner_for_main_fragment);
-        for (int i = 0; i < Notes.notes.size(); i++){
-            TextView tv = new TextView(getContext());
-            tv.setText(Notes.notes.get(i).getName() + "\n" + Notes.notes.get(i).getDate());
-            tv.setTextSize(30);
-            tv.setBackgroundColor(R.color.purple_500);
-            linearLayout.addView(tv);
-            int index = i;
-            tv.setOnClickListener(v -> showNote(index));
-        }
     }
 
     private void showNote(int index){
