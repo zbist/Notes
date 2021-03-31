@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,8 +19,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     private OnNoteClicked noteClicked;
     private OnNoteLongClicked noteLongClicked;
+    private Fragment fragment;
+
+    public NotesAdapter(Fragment fragment) {
+        this.fragment = fragment;
+    }
 
     public void addItems(List<Note> items){
+        clear();
         this.items.addAll(items);
     }
 
@@ -48,11 +55,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     }
 
     interface OnNoteClicked{
-        void onNoteClick(Note note);
+        void onNoteClick(Note note, int position);
     }
 
     interface OnNoteLongClicked{
-        void onNoteLongClick(Note note);
+        void onNoteLongClick(View view, int position);
     }
 
     public void setNoteClicked(OnNoteClicked noteClicked) {
@@ -71,6 +78,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            fragment.registerForContextMenu(itemView);
+
             title = itemView.findViewById(R.id.title);
             data = itemView.findViewById(R.id.date);
 
@@ -78,7 +87,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                 @Override
                 public void onClick(View v) {
                     if (noteClicked != null){
-                        noteClicked.onNoteClick(items.get(getAdapterPosition()));
+                        noteClicked.onNoteClick(items.get(getAdapterPosition()), getAdapterPosition());
                     }
                 }
             });
@@ -87,7 +96,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                 @Override
                 public boolean onLongClick(View v) {
                     if (noteLongClicked != null){
-                        noteLongClicked.onNoteLongClick(items.get(getAdapterPosition()));
+                        noteLongClicked.onNoteLongClick(itemView, getAdapterPosition());
                     }
                     return true;
                 }

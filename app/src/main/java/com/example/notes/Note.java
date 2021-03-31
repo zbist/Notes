@@ -1,13 +1,15 @@
 package com.example.notes;
 
 import android.annotation.SuppressLint;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Note {
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+public class Note{
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private String name;
     private String content;
     private Date date;

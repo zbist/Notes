@@ -10,4 +10,7 @@
     <string name="main">main</string>
     <string name="add_node">+</string>
     <string name="it_s_my_notes_app">it\'s my Notes App</string>
+    <string name="clear_all">Clear all</string>
+    <string name="delete">delete</string>
+    <string name="save">save</string>
 </resources>
