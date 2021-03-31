@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yellow_700">#f57c00</color>
     <color name="yellow_500">#ff9800</color>
+    <color name="yellow_for_card">#ffeb3b</color>
 </resources>

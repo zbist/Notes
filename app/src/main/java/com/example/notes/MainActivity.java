@@ -22,7 +22,12 @@ public class MainActivity extends AppCompatActivity {
             ShowNoteFragment fragment = ShowNoteFragment.newInstance(-1);
             getSupportFragmentManager().beginTransaction().replace(R.id.second_container, fragment).commit();
         }
-        init();
+        initToolbar();
+        initBottomMenu();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.first_container, new MainFragment()).commit();
+        }
     }
 
     private void initToolbar(){
@@ -47,12 +52,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return false;
-    }
-
-    private void init(){
-        initToolbar();
-        initBottomMenu();
-        getSupportFragmentManager().beginTransaction().replace(R.id.first_container, new MainFragment()).commit();
     }
 
     private void initBottomMenu(){
