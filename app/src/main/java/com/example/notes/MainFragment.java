@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,7 @@ public class MainFragment extends Fragment {
 
     private NotesViewModel notesViewModel;
     private NotesAdapter adapter;
+    private int positionOfNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,18 +42,27 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new NotesAdapter();
+        adapter = new NotesAdapter(this);
         adapter.setNoteClicked(new NotesAdapter.OnNoteClicked() {
             @Override
-            public void onNoteClick(Note note) {
-                Toast.makeText(requireContext(), note.getName(), Toast.LENGTH_SHORT).show();
+            public void onNoteClick(Note note, int position) {
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.second_container, ShowNoteFragment.newInstance(position))
+                            .addToBackStack(null).commit();
+                } else {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.first_container, ShowNoteFragment.newInstance(position))
+                            .addToBackStack(null).commit();
+                }
             }
         });
 
         adapter.setNoteLongClicked(new NotesAdapter.OnNoteLongClicked() {
             @Override
-            public void onNoteLongClick(Note note) {
-                Toast.makeText(requireContext(), note.getName() + "Long", Toast.LENGTH_SHORT).show();
+            public void onNoteLongClick(View view, int position) {
+                positionOfNote = position;
+                view.showContextMenu();
             }
         });
         RecyclerView recyclerView = view.findViewById(R.id.recycleView);
@@ -75,19 +86,36 @@ public class MainFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.add_node){
+        if (item.getItemId() == R.id.add_node) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.second_container, ShowNoteFragment.newInstance(-1))
+                        .addToBackStack(null).commit();
+            } else {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.first_container, ShowNoteFragment.newInstance(-1))
+                        .addToBackStack(null).commit();
+            }
+            return true;
+        } else if (item.getItemId() == R.id.clear_all) {
+            notesViewModel.clearAll();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void showNote(int index){
-        ShowNoteFragment fragment = ShowNoteFragment.newInstance(index);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getChildFragmentManager().beginTransaction().replace(R.id.second_container, fragment).commit();
-        } else {
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.first_container, fragment).addToBackStack(null).commit();
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        requireActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.context_delete) {
+            notesViewModel.delete(positionOfNote);
+            return true;
         }
+        return super.onContextItemSelected(item);
     }
 }

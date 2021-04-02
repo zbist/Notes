@@ -18,4 +18,18 @@ public class NotesViewModel extends ViewModel {
     public LiveData<List<Note>> getNotesLiveData(){
         return notesLiveData;
     }
+
+    public void clearAll(){
+        repository.clearNotes();
+        fetchNotes();
+    }
+
+    public void delete(int position){
+        repository.deleteNote(position);
+        fetchNotes();
+    }
+
+    public void addNote(Note note){
+        repository.addNote(note);
+    }
 }
