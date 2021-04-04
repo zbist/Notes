@@ -97,9 +97,6 @@ public class MainFragment extends Fragment {
                         .addToBackStack(null).commit();
             }
             return true;
-        } else if (item.getItemId() == R.id.clear_all) {
-            notesViewModel.clearAll();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

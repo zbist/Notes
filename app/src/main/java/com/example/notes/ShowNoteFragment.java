@@ -12,9 +12,13 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class ShowNoteFragment extends Fragment {
+
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public static final String ARG_INDEX = "index";
     private int index;
@@ -56,7 +60,7 @@ public class ShowNoteFragment extends Fragment {
     }
 
     private void init(View view){
-        repository = NotesRepository.INSTANCE;
+        repository = FirestoreNotesRepository.INSTANCE;
         dateView = view.findViewById(R.id.date_note);
         nameView = view.findViewById(R.id.name_note_input);
         textView = view.findViewById(R.id.text_note_input);
@@ -64,7 +68,8 @@ public class ShowNoteFragment extends Fragment {
     }
 
     private void initNote(){
-        note = repository.getNotes().get(index);
+
+        note = repository.getNote(index);
         dateView.append(note.getDate());
         nameView.setText(note.getName());
         textView.setText(note.getContent());
@@ -74,8 +79,9 @@ public class ShowNoteFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repository.addNote(new Note(nameView.getText().toString(),
-                        textView.getText().toString(), new Date()));
+                Note note = new Note(nameView.getText().toString(),
+                        textView.getText().toString(), new Date());
+                repository.addNote(value -> getActivity().onBackPressed(), note);
             }
         });
     }
@@ -84,8 +90,16 @@ public class ShowNoteFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                repository.getNotes().set(index, new Note(nameView.getText().toString(),
-                        textView.getText().toString(), new Date()));
+                note.setDate(new Date());
+                repository.updateNote(note.getId(),
+                        nameView.getText().toString(),
+                        textView.getText().toString(), note.getDate(),
+                        new Callback<Note>() {
+                            @Override
+                            public void onResult(Note value) {
+                                getActivity().onBackPressed();
+                            }
+                        });
             }
         });
     }
