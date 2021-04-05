@@ -3,4 +3,5 @@
     <dimen name="margin">8dp</dimen>
     <dimen name="settings_size">30sp</dimen>
     <dimen name="margin_for_cardView">2dp</dimen>
+    <dimen name="size_sign_out">18sp</dimen>
 </resources>
