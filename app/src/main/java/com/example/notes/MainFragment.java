@@ -1,5 +1,8 @@
 package com.example.notes;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -107,10 +110,26 @@ public class MainFragment extends Fragment {
         requireActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.context_delete) {
-            notesViewModel.delete(positionOfNote);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.title_for_dialog)
+                    .setMessage(R.string.message_for_dialog)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.positive_for_dialog, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            notesViewModel.delete(positionOfNote);
+                        }
+                    }).setNegativeButton(R.string.cancel_for_dialog, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).create().show();
+
             return true;
         }
         return super.onContextItemSelected(item);

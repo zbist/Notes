@@ -14,4 +14,8 @@
     <string name="delete">delete</string>
     <string name="save">save</string>
     <string name="sign_out">SignOut</string>
+    <string name="cancel_for_dialog">cancel</string>
+    <string name="positive_for_dialog">delete</string>
+    <string name="message_for_dialog">You can\'t cancel this action!</string>
+    <string name="title_for_dialog">Delete this note?</string>
 </resources>
